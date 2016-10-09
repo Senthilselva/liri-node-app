@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Senthilselva/liri-node-app#readme",
   "dependencies": {
+    "inquirer": "^1.2.1",
     "request": "^2.75.0",
     "spotify": "^0.3.0",
     "twitter": "^1.4.0"
