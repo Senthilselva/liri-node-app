@@ -53,7 +53,7 @@ function selectAction(action, list){
 			createMovieStr(list);
 			break;
 		case "do-what-it-says":
-			doWhatItSays();
+			doWhatItSays(list);
 			break;
 		default:
 			console.log("Wrong command!! Try again");
@@ -92,7 +92,7 @@ console.log("create song"+ sList)
 	if(!sList){
 		//if they did not send us song
 		//Prompt for a song and the call the spotifyfuctio
-		console.log("list is null")
+		//console.log("list is null")
 		inquirer.prompt([
 		{
 			type: "input",
@@ -207,6 +207,24 @@ request('http://www.omdbapi.com/?t='+movieName+'&y=&plot=short&r=json', function
 
 
 
-function doWhatItSays(){
-	console.log("doWhatItSays");
+function doWhatItSays(txtFile){
+	console.log("doWhatItSays  :  "+ txtFile);
+	txtFile=txtFile.toString();
+	fs.readFile(txtFile, 'utf8', function(error,data){
+		var line = data.split('\r\n');
+
+		for(var i=0; i < line.length; i++){
+			line[i] = line[i].replace(/\"+/g, "");
+			line[i] = line[i].split(',');
+			var action = line[i].splice(0,1);
+			action = action.toString();
+			line[i][0]=line[i][0].toString();
+			console.log("action: "+ action);
+			console.log("List: "+ line[i][0]);
+			var list = line[i][0];
+			list = list.split(" ");
+			selectAction(action, list);
+			console.log("***************************************************************************");	
+		}
+	}); //end read file
 }
