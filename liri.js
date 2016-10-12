@@ -53,7 +53,7 @@ function selectAction(action, list){
 			createMovieStr(list);
 			break;
 		case "do-what-it-says":
-			doWhatItSays(list);
+			doWhatItSays('random.txt');
 			break;
 		default:
 			console.log("Wrong command!! Try again");
@@ -67,21 +67,27 @@ function selectAction(action, list){
 function myTweet(){
 	
 	var params = { limit : 20 }
-
+	
 	client.get('statuses/user_timeline', params, function(error, tweets, response) {
 	//client.get('search/tweets`', params, function(error, tweets, response) {
+  		var logStr = "Last 20 Tweets \n";
+
   	if (!error) {
   		for(var i=0; i < tweets.length; i++){
     		console.log("Tweet "+ (i+1)+" : " + JSON.stringify(tweets[i].text,null,2));
+    		logStr=logStr+"Tweet "+ (i+1)+" : " + JSON.stringify(tweets[i].text,null,2);
     		//console.log("It was created on "+ JSON.stringify(tweets[i].created_at));
     		var tweetDate=new Date(tweets[i].created_at).toISOString();
-    		console.log("It was created on "+ moment(tweetDate).format('MM DD YYYY'));
+    		console.log("\t\tIt was created on "+ moment(tweetDate).format('MM DD YYYY'));
+    		logStr = logStr+"\n\t\tIt was created on "+ moment(tweetDate).format('MM DD YYYY')+"\n";
 		}
   	} else{
   		console.log(error)
   	}
-});
+  	logStr += "____________________________________________________________________________\n"
+		writeLogTxt(logStr);
 
+});
 }
 
 
@@ -119,10 +125,13 @@ console.log("create song"+ sList)
 
 //Spotify Function
 function spotifyThisSong(songStr){
+
+	var logStr = "";
 	//console.log(songStr);
 	if(!songStr){
 		songStr="the+sign";
 		console.log("You did not enter any song. So it is The Sign");
+		logStr = logStr+"You did not enter any song. So it is The Sign\n"
 	}
 	songStr = songStr.toLowerCase();
 	var song = 'https://api.spotify.com/v1/search?query='+songStr+'&offset=20&limit=10&type=track';
@@ -139,14 +148,18 @@ function spotifyThisSong(songStr){
 			//console.log(JSON.stringify(data.tracks.items[i], null, 2));
 			console.log("Album "+(i+1) +": " + data.tracks.items[i].album.name);
 			console.log("Listen to the Preview here :" + data.tracks.items[i].preview_url);
-
-
+			logStr=logStr+"Album "+(i+1) +": " + data.tracks.items[i].album.name+"\nListen to the Preview here :"+
+					data.tracks.items[i].preview_url;
+			//
 			for(var j=0; j < data.tracks.items[i].artists.length; j++){
 				console.log("Artist " + (j+1) + " : " + data.tracks.items[i].artists[j].name);
+				logStr= logStr+"\nArtist" + (j+1) + " : " + data.tracks.items[i].artists[j].name;
 			}
+			logStr = logStr+"\n_____________________________________________________________________________\n";
 			console.log("__________________________________________________________________________")
 		}
 		//console.log(data);
+		writeLogTxt(logStr);
 	});
 }
 
@@ -162,7 +175,7 @@ function createMovieStr(mList){
 			name: "movie",
 			message: "Please enter the Movie or we can show 'Mr.Nobody'"
 		}
-		// After the prompt, store the user's response in a variable called location.
+		// After the prompt, store the user's response in a variable
 		]).then(function(user){
 		//console.log('action: '+ action.action)
 			mList = user.movie.split(" ");
@@ -175,7 +188,6 @@ function createMovieStr(mList){
 		mList = mList.join("+")
 		console.log("From the terminal:" + mList);
 		movieThis(mList);
-
 	}
 
 }//Create Movie Str
@@ -184,25 +196,38 @@ function createMovieStr(mList){
 
 function movieThis(movieName){
 	console.log(movieName);
-//  create a request 
-request('http://www.omdbapi.com/?t='+movieName+'&y=&plot=short&r=json', function (error, response, body) {
-	// If the request is successful
-	 if (!error && response.statusCode == 200) {
-	// Then log for the movie
-	console.log("Title : " + JSON.parse(body).Title);
-	console.log("Year : " + JSON.parse(body).Year);
-	console.log("IMDB Rating : " + JSON.parse(body).imdbRating);
-	console.log("Country : " + JSON.parse(body).Country);
-	console.log("Language : " + JSON.parse(body).Language);
-	console.log("Plot : " + JSON.parse(body).Plot);
-	console.log("Actor : " + JSON.parse(body).Actor);
-	
-
-	console.log("___________________________________________________________");	
-
-	//console.log("The movie's rating is: " + JSON.parse(body));
+	if(!movieName){
+		movieName="Mr+Nobody";
+		console.log("You did not enter any song. So it is Mr. Nobody");
 	}
-});
+//  create a request 
+	request('http://www.omdbapi.com/?t='+movieName+'&y=&plot=short&r=json&tomatoes=true', function (error, response, body) {
+		// If the request is successful
+		 if (!error && response.statusCode == 200) {
+		// Then log for the movie
+		console.log("Title :\t\t" + JSON.parse(body).Title);
+		console.log("Year :\t\t" + JSON.parse(body).Year);
+		console.log("IMDB Rating :\t" + JSON.parse(body).imdbRating);
+		console.log("Country :\t" + JSON.parse(body).Country);
+		console.log("Language :\t" + JSON.parse(body).Language);
+		console.log("Plot :\t\t" + JSON.parse(body).Plot);
+		console.log("Actor :\t\t" + JSON.parse(body).Actors);
+		console.log("Rotten Tomato Rating :\t" + JSON.parse(body).tomatoRating);
+		console.log("Rotten Tomato URL :\t" + JSON.parse(body).tomatoURL);
+		console.log("___________________________________________________________");	
+
+		var logStr = "Title :\t " + JSON.parse(body).Title + "\n Year :\t" + JSON.parse(body).Year+"\nIMDB Rating :\t" + JSON.parse(body).imdbRating+
+	    "\nCountry :\t" + JSON.parse(body).Country+"\nLanguage :\t" + 
+	    JSON.parse(body).Language + "\nPlot :\t" + JSON.parse(body).Plot+
+		"\nActor :\t" + JSON.parse(body).Actors+
+		"\nRotten Tomato Rating :\t" + JSON.parse(body).tomatoRating+
+		"\nRotten Tomato URL :\t" + JSON.parse(body).tomatoURL+
+		"\n___________________________________________________________\n"
+
+		writeLogTxt(logStr); 
+		//console.log("The movie's rating is: "+ (body));
+		}
+	});
 }
 
 
@@ -212,19 +237,33 @@ function doWhatItSays(txtFile){
 	txtFile=txtFile.toString();
 	fs.readFile(txtFile, 'utf8', function(error,data){
 		var line = data.split('\r\n');
-
 		for(var i=0; i < line.length; i++){
-			line[i] = line[i].replace(/\"+/g, "");
-			line[i] = line[i].split(',');
-			var action = line[i].splice(0,1);
-			action = action.toString();
-			line[i][0]=line[i][0].toString();
-			console.log("action: "+ action);
-			console.log("List: "+ line[i][0]);
-			var list = line[i][0];
-			list = list.split(" ");
+			if(line[i].indexOf(',') > 0){
+				line[i] = line[i].replace(/\"+/g, "");
+				line[i] = line[i].split(',');
+				var action = line[i].splice(0,1);
+				action = action.toString();
+				line[i][0]=line[i][0].toString();
+				console.log("action: "+ action);
+				console.log("List: "+ line[i][0]);
+				var list = line[i][0];
+				list = list.split(" "); //selectAction take in a array of words
+			} else {
+				var action = line[i].toString();
+				list = null;
+			}
+			
 			selectAction(action, list);
-			console.log("***************************************************************************");	
+			console.log("***************************************************************************");
+
 		}
 	}); //end read file
+}
+
+
+function writeLogTxt(logStr){
+	fs.appendFile('log.txt', logStr, function(error){
+		console.log("Logged to log.txt");
+	});
+
 }
