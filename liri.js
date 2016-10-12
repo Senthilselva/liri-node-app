@@ -63,28 +63,33 @@ function selectAction(action, list){
 } //end Select Action 
 
 
-//Tweeter Function
+//Tweeter Function 
 function myTweet(){
 	
 	var params = { limit : 20 }
 	
+	//Gets 
 	client.get('statuses/user_timeline', params, function(error, tweets, response) {
-	//client.get('search/tweets`', params, function(error, tweets, response) {
+		//client.get('search/tweets`', params, function(error, tweets, response) {
   		var logStr = "Last 20 Tweets \n";
 
   	if (!error) {
   		for(var i=0; i < tweets.length; i++){
-    		console.log("Tweet "+ (i+1)+" : " + JSON.stringify(tweets[i].text,null,2));
+    		//console.log("Tweet "+ (i+1)+" : " + JSON.stringify(tweets[i].text,null,2));
     		logStr=logStr+"Tweet "+ (i+1)+" : " + JSON.stringify(tweets[i].text,null,2);
     		//console.log("It was created on "+ JSON.stringify(tweets[i].created_at));
     		var tweetDate=new Date(tweets[i].created_at).toISOString();
-    		console.log("\t\tIt was created on "+ moment(tweetDate).format('MM DD YYYY'));
+    		//console.log("\t\tIt was created on "+ moment(tweetDate).format('MM DD YYYY'));
     		logStr = logStr+"\n\t\tIt was created on "+ moment(tweetDate).format('MM DD YYYY')+"\n";
 		}
   	} else{
   		console.log(error)
   	}
-  	logStr += "____________________________________________________________________________\n"
+  	// logStr += "____________________________________________________________________________\n";
+  	// 	logStr = moment().format('MM/DD/YYYY HH:MM')
+  	// 			 + "\n____________________________________________________________________________\n"
+  	// 			 + logStr+"\n";
+
 		writeLogTxt(logStr);
 
 });
@@ -94,7 +99,7 @@ function myTweet(){
 //create a song query
 
 function createSongStr(sList){
-console.log("create song"+ sList)
+//console.log("create song"+ sList)
 	if(!sList){
 		//if they did not send us song
 		//Prompt for a song and the call the spotifyfuctio
@@ -117,7 +122,7 @@ console.log("create song"+ sList)
 	else {
 		sList = sList.join("+")
 		spotifyThisSong(sList);
-		console.log("From the terminal:" + sList);
+		//console.log("From the terminal:" + sList);
 	}
 
 }
@@ -130,7 +135,7 @@ function spotifyThisSong(songStr){
 	//console.log(songStr);
 	if(!songStr){
 		songStr="the+sign";
-		console.log("You did not enter any song. So it is The Sign");
+		//console.log("You did not enter any song. So it is The Sign");
 		logStr = logStr+"You did not enter any song. So it is The Sign\n"
 	}
 	songStr = songStr.toLowerCase();
@@ -146,17 +151,17 @@ function spotifyThisSong(songStr){
 
 		for(var i = 0; i < data.tracks.items.length; i++){
 			//console.log(JSON.stringify(data.tracks.items[i], null, 2));
-			console.log("Album "+(i+1) +": " + data.tracks.items[i].album.name);
-			console.log("Listen to the Preview here :" + data.tracks.items[i].preview_url);
-			logStr=logStr+"Album "+(i+1) +": " + data.tracks.items[i].album.name+"\nListen to the Preview here :"+
-					data.tracks.items[i].preview_url;
+			//console.log("Album "+(i+1) +": " + data.tracks.items[i].album.name);
+			//console.log("Listen to the Preview here :" + data.tracks.items[i].preview_url);
+			logStr=logStr+"Album "+(i+1) +": " + data.tracks.items[i].album.name+
+					"\nListen to the Preview here :"+ data.tracks.items[i].preview_url;
 			//
 			for(var j=0; j < data.tracks.items[i].artists.length; j++){
-				console.log("Artist " + (j+1) + " : " + data.tracks.items[i].artists[j].name);
+				//console.log("Artist " + (j+1) + " : " + data.tracks.items[i].artists[j].name);
 				logStr= logStr+"\nArtist" + (j+1) + " : " + data.tracks.items[i].artists[j].name;
 			}
-			logStr = logStr+"\n_____________________________________________________________________________\n";
-			console.log("__________________________________________________________________________")
+			logStr = logStr+"\n------------------------------------------------------------------------\n";
+			//console.log("__________________________________________________________________________")
 		}
 		//console.log(data);
 		writeLogTxt(logStr);
@@ -186,7 +191,7 @@ function createMovieStr(mList){
 	}
 	else {
 		mList = mList.join("+")
-		console.log("From the terminal:" + mList);
+		//console.log("From the terminal:" + mList);
 		movieThis(mList);
 	}
 
@@ -200,29 +205,31 @@ function movieThis(movieName){
 		movieName="Mr+Nobody";
 		console.log("You did not enter any song. So it is Mr. Nobody");
 	}
+
+	movieName = movieName.toLowerCase();
 //  create a request 
 	request('http://www.omdbapi.com/?t='+movieName+'&y=&plot=short&r=json&tomatoes=true', function (error, response, body) {
 		// If the request is successful
 		 if (!error && response.statusCode == 200) {
 		// Then log for the movie
-		console.log("Title :\t\t" + JSON.parse(body).Title);
-		console.log("Year :\t\t" + JSON.parse(body).Year);
-		console.log("IMDB Rating :\t" + JSON.parse(body).imdbRating);
-		console.log("Country :\t" + JSON.parse(body).Country);
-		console.log("Language :\t" + JSON.parse(body).Language);
-		console.log("Plot :\t\t" + JSON.parse(body).Plot);
-		console.log("Actor :\t\t" + JSON.parse(body).Actors);
-		console.log("Rotten Tomato Rating :\t" + JSON.parse(body).tomatoRating);
-		console.log("Rotten Tomato URL :\t" + JSON.parse(body).tomatoURL);
-		console.log("___________________________________________________________");	
+		// console.log("Title :\t\t" + JSON.parse(body).Title);
+		// console.log("Year :\t\t" + JSON.parse(body).Year);
+		// console.log("IMDB Rating :\t" + JSON.parse(body).imdbRating);
+		// console.log("Country :\t" + JSON.parse(body).Country);
+		// console.log("Language :\t" + JSON.parse(body).Language);
+		// console.log("Plot :\t\t" + JSON.parse(body).Plot);
+		// console.log("Actor :\t\t" + JSON.parse(body).Actors);
+		// console.log("Rotten Tomato Rating :\t" + JSON.parse(body).tomatoRating);
+		// console.log("Rotten Tomato URL :\t" + JSON.parse(body).tomatoURL);
+		// console.log("___________________________________________________________");	
 
 		var logStr = "Title :\t " + JSON.parse(body).Title + "\n Year :\t" + JSON.parse(body).Year+"\nIMDB Rating :\t" + JSON.parse(body).imdbRating+
 	    "\nCountry :\t" + JSON.parse(body).Country+"\nLanguage :\t" + 
 	    JSON.parse(body).Language + "\nPlot :\t" + JSON.parse(body).Plot+
 		"\nActor :\t" + JSON.parse(body).Actors+
 		"\nRotten Tomato Rating :\t" + JSON.parse(body).tomatoRating+
-		"\nRotten Tomato URL :\t" + JSON.parse(body).tomatoURL+
-		"\n___________________________________________________________\n"
+		"\nRotten Tomato URL :\t" + JSON.parse(body).tomatoURL+"\n"
+		//"\n___________________________________________________________\n"
 
 		writeLogTxt(logStr); 
 		//console.log("The movie's rating is: "+ (body));
@@ -244,8 +251,8 @@ function doWhatItSays(txtFile){
 				var action = line[i].splice(0,1);
 				action = action.toString();
 				line[i][0]=line[i][0].toString();
-				console.log("action: "+ action);
-				console.log("List: "+ line[i][0]);
+				//console.log("action: "+ action);
+				//console.log("List: "+ line[i][0]);
 				var list = line[i][0];
 				list = list.split(" "); //selectAction take in a array of words
 			} else {
@@ -254,7 +261,7 @@ function doWhatItSays(txtFile){
 			}
 			
 			selectAction(action, list);
-			console.log("***************************************************************************");
+			//console.log("***************************************************************************");
 
 		}
 	}); //end read file
@@ -262,6 +269,11 @@ function doWhatItSays(txtFile){
 
 
 function writeLogTxt(logStr){
+	logStr += "____________________________________________________________________________\n";
+  	logStr = "Time : " + moment().format('MM/DD/YYYY HH:MM')
+  			+ "\n____________________________________________________________________________\n"
+  			+ logStr+"\n";
+	console.log(logStr);
 	fs.appendFile('log.txt', logStr, function(error){
 		console.log("Logged to log.txt");
 	});
